@@ -27,3 +27,5 @@ test('excluded directories match only the directory and its descendants',()=>{
 test('paths normalize separators and case for comparisons',()=>{
  assert.equal(d.normalizePath('C:\\\\Users\\\\A\\\\Downloads\\\\'),'c:/users/a/downloads');
 });
+
+test('document-only filter accepts common office and archive formats',()=>{for(const p of ['a.pdf','a.docx','a.xlsx','a.pptx','a.zip','a.png'])assert.equal(d.isDocumentType(p),true,p);for(const p of ['a.exe','a.dll','a.iso'])assert.equal(d.isDocumentType(p),false,p)});
