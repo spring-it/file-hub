@@ -27,10 +27,12 @@ test('statistics remain accurate when more files exist than the 2000-row display
   for(let i=0;i<2005;i++)s.recordDetection({path:'C:/bulk/doc-'+i+'.pdf',size:10,mtimeMs:i+1});
   const bootstrap=s.getBootstrap();
   assert.equal(bootstrap.stats.pendingTag,2005);
-  assert.equal(bootstrap.files.length,2000);
+  assert.equal(bootstrap.files.length,200);const next=s.listFiles(200,200);assert.equal(next.length,200);assert.equal(new Set([...bootstrap.files,...next].map(f=>f.id)).size,400);
 });
 test('a browser monitor rule must name the actual browser executable',t=>{
   const s=fixture(t);
   assert.throws(()=>s.addProgram({name:'Impostor',exePath:'C:/tools/notchrome.exe',mode:'browser'}),/仅支持 Edge\/Chrome/);
   assert.throws(()=>s.addProgram({name:'Unsupported',exePath:'C:/tools/program.exe',mode:'combined'}),/尚未支持|不支持/);
 });
+
+test('two SQLite connections do not duplicate the same discovered file',t=>{const dir=fs.mkdtempSync(path.join(os.tmpdir(),'fh-race-')),dbPath=path.join(dir,'shared.sqlite');const a=createStore(dbPath),b=createStore(dbPath);t.after(()=>{a.close();b.close();fs.rmSync(dir,{recursive:true,force:true})});const value={path:'C:/Download/shared.pdf',size:9,mtimeMs:1234};assert.equal(a.recordDetection(value).created,true);assert.equal(b.recordDetection(value).created,false);assert.equal(a.getBootstrap().totalFiles,1)});
