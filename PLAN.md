@@ -24,5 +24,12 @@
 - [x] 修复应用入口未引入启动参数与浏览器 Native Messaging 检测模块的问题。
 - [x] 为本机入口和图标加入回归测试。
 - [x] 增加主分支的 Windows 发布工作流，执行测试、构建、安装包校验和 GitHub Release 上传。
-- [ ] 将通过 CI 的版本合并至 main 后，确认 `v0.1.0` Release 已成功上传 EXE 安装文件。
+- [x] 已将 CI 验证通过的代码合并至 main，并确认 [v0.1.0 Release](https://github.com/spring-it/file-hub/releases/tag/v0.1.0) 已上传 [FileHub-Setup-0.1.0.exe](https://github.com/spring-it/file-hub/releases/download/v0.1.0/FileHub-Setup-0.1.0.exe)。
 - [ ] 在真实 Windows 桌面电脑执行首次安装、浏览器扩展联动与长时间运行验收。
+
+## 发布记录
+
+- 版本：**v0.1.0 Windows MVP 预览版**。
+- 自动化发布结果：[Publish Windows Release — 成功](https://github.com/spring-it/file-hub/actions/runs/39275606725)。
+- Windows 安装包：`FileHub-Setup-0.1.0.exe`，95,849,206 字节，已上传到 GitHub Releases。
+- 仍待验收：真实 Windows 用户桌面的安装/卸载、浏览器扩展连通性、客户端兼容性和长时间运行性能；普通客户端未知目录的 ETW 监控尚未实现。

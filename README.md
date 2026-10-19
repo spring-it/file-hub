@@ -10,6 +10,13 @@ Windows 本地下载文件发现、标记和文件库管理工具。
 - Edge/Chrome 下载扩展与 Native Messaging 桥接原型。
 - 内部网页外发集成暂不在第一阶段实现。
 
+## 下载 Windows 安装包
+
+- [File Hub v0.1.0 GitHub Release](https://github.com/spring-it/file-hub/releases/tag/v0.1.0)
+- [下载 FileHub-Setup-0.1.0.exe](https://github.com/spring-it/file-hub/releases/download/v0.1.0/FileHub-Setup-0.1.0.exe)
+
+当前为**未签名预览版**。Windows 首次运行可能显示未知发布者；请从上述 GitHub 官方仓库链接下载。正式部署前仍需在目标 Windows 电脑上验证客户端、浏览器扩展和安装行为。
+
 ## 开发
 
 ```bash
