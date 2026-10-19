@@ -1,0 +1,65 @@
+name: Publish Windows Release
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: file-hub-release
+  cancel-in-progress: false
+jobs:
+  build-and-release:
+    if: github.ref == 'refs/heads/main'
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Run tests
+        run: npm test
+      - name: Typecheck and build
+        run: npm run build
+      - name: Package Windows installer
+        run: npm run package:win
+      - name: Verify installer exists
+        shell: pwsh
+        run: |
+          $version = (Get-Content package.json -Raw | ConvertFrom-Json).version
+          $file = "release/FileHub-Setup-$version.exe"
+          if (-not (Test-Path $file)) { throw "Installer not found: $file" }
+          $bytes = (Get-Item $file).Length
+          if ($bytes -lt 1MB) { throw "Installer is unexpectedly small: $bytes bytes" }
+          Write-Host "Installer verified: $file ($bytes bytes)"
+      - name: Upload tested installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: file-hub-tested-installer
+          path: release/FileHub-Setup-*.exe
+          if-no-files-found: error
+      - name: Create or update v0.1.0 GitHub Release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $version = (Get-Content package.json -Raw | ConvertFrom-Json).version
+          $tag = "v$version"
+          $installer = "release/FileHub-Setup-$version.exe"
+          $existing = gh release list --json tagName --limit 100 | ConvertFrom-Json
+          if ($LASTEXITCODE -ne 0) { throw "Failed to list releases" }
+          if ($existing.tagName -contains $tag) {
+            gh release upload $tag $installer --clobber
+            if ($LASTEXITCODE -ne 0) { throw "Release asset upload failed" }
+            Write-Host "Updated release $tag"
+          } else {
+            gh release create $tag $installer --title "File Hub $tag - Windows MVP" --notes-file "docs/RELEASE_NOTES.md" --prerelease --target $env:GITHUB_SHA
+            if ($LASTEXITCODE -ne 0) { throw "Release creation failed" }
+            Write-Host "Created release $tag"
+          }
+          gh release view $tag --json url,tagName,assets
+          if ($LASTEXITCODE -ne 0) { throw "Cannot verify the published release" }

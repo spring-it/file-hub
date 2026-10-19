@@ -1,1 +1,84 @@
-{"name":"file-hub","version":"0.1.0","private":true,"description":"Windows local download file discovery, tagging and library management","main":"electron/main.cjs","scripts":{"dev":"concurrently -k \"vite --host 127.0.0.1\" \"wait-on http://127.0.0.1:5173 && cross-env VITE_DEV_SERVER_URL=http://127.0.0.1:5173 electron .\"","start":"electron .","build":"tsc --noEmit && vite build","test":"node --test tests/*.test.cjs","package:win":"npm run build && electron-builder --win nsis"},"dependencies":{"lucide-react":"^0.468.0","react":"^18.3.1","react-dom":"^18.3.1"},"devDependencies":{"@types/react":"^18.3.12","@types/react-dom":"^18.3.1","@vitejs/plugin-react":"^4.3.4","electron":"^39.0.0","electron-builder":"^26.0.12","typescript":"^5.7.2","vite":"^6.0.1","concurrently":"^9.1.0","wait-on":"^8.0.1","cross-env":"^7.0.3"},"build":{"appId":"com.springit.filehub","productName":"FileHub","directories":{"output":"release"},"files":["dist/**/*","electron/**/*","shared/**/*","package.json","extension/**/*","scripts/**/*","assets/**/*"],"extraResources":[{"from":"extension","to":"extension"},{"from":"scripts","to":"scripts"}],"win":{"target":[{"target":"nsis","arch":["x64"]}],"artifactName":"FileHub-Setup-${version}.${ext}"},"nsis":{"oneClick":false,"allowToChangeInstallationDirectory":true,"createDesktopShortcut":true,"createStartMenuShortcut":true,"include":"scripts/installer.nsh"}}}
+{
+  "name": "file-hub",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Windows local download file discovery, tagging and library management",
+  "main": "electron/main.cjs",
+  "scripts": {
+    "dev": "concurrently -k \"vite --host 127.0.0.1\" \"wait-on http://127.0.0.1:5173 && cross-env VITE_DEV_SERVER_URL=http://127.0.0.1:5173 electron .\"",
+    "start": "electron .",
+    "build": "tsc --noEmit && vite build",
+    "test": "node --test tests/*.test.cjs",
+    "package:win": "npm run build && npm run generate:icons && electron-builder --win nsis --publish never",
+    "generate:icons": "node scripts/generate-icons.cjs",
+    "pretest": "npm run generate:icons && npm run check:runtime",
+    "predev": "npm run generate:icons",
+    "prestart": "npm run generate:icons",
+    "check:runtime": "node scripts/check-runtime.cjs",
+    "prebuild": "npm run check:runtime"
+  },
+  "dependencies": {
+    "lucide-react": "^0.468.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "electron": "^39.0.0",
+    "electron-builder": "^26.0.12",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.1",
+    "concurrently": "^9.1.0",
+    "wait-on": "^8.0.1",
+    "cross-env": "^7.0.3",
+    "pngjs": "^7.0.0"
+  },
+  "build": {
+    "appId": "com.springit.filehub",
+    "productName": "FileHub",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "shared/**/*",
+      "package.json",
+      "extension/**/*",
+      "scripts/**/*",
+      "assets/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "extension",
+        "to": "extension"
+      },
+      {
+        "from": "scripts",
+        "to": "scripts"
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "FileHub-Setup-${version}.${ext}",
+      "icon": "assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "include": "scripts/installer.nsh",
+      "perMachine": false
+    }
+  }
+}
