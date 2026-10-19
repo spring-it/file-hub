@@ -20,3 +20,17 @@ test('browser event refines a generic directory source for the same file instanc
 test('default directory is seeded only once and user removal persists',t=>{const s=fixture(t),dir=fs.mkdtempSync(path.join(os.tmpdir(),'fh-default-'));t.after(()=>fs.rmSync(dir,{recursive:true,force:true}));s.ensureDefaultDirectory(dir);assert.equal(s.getBootstrap().directories.length,1);s.deleteDirectory(s.getBootstrap().directories[0].id);s.ensureDefaultDirectory(dir);assert.equal(s.getBootstrap().directories.length,0)});
 
 test('directory rules can be edited without losing enabled state',t=>{const s=fixture(t),id=s.addProgram({name:'Client',exePath:'C:/client.exe',mode:'directory'});s.addDirectory({directoryPath:'C:/downloads',programId:id,recursive:true});const directory=s.getBootstrap().directories[0];s.setDirectoryEnabled(directory.id,false);s.updateDirectory(directory.id,{directoryPath:'C:/downloads-v2',programId:id,recursive:false});const updated=s.getBootstrap().directories[0];assert.equal(updated.path,'C:/downloads-v2');assert.equal(updated.recursive,false);assert.equal(updated.enabled,false)});
+
+
+test('statistics remain accurate when more files exist than the 2000-row display window',t=>{
+  const s=fixture(t);
+  for(let i=0;i<2005;i++)s.recordDetection({path:'C:/bulk/doc-'+i+'.pdf',size:10,mtimeMs:i+1});
+  const bootstrap=s.getBootstrap();
+  assert.equal(bootstrap.stats.pendingTag,2005);
+  assert.equal(bootstrap.files.length,2000);
+});
+test('a browser monitor rule must name the actual browser executable',t=>{
+  const s=fixture(t);
+  assert.throws(()=>s.addProgram({name:'Impostor',exePath:'C:/tools/notchrome.exe',mode:'browser'}),/仅支持 Edge\/Chrome/);
+  assert.throws(()=>s.addProgram({name:'Unsupported',exePath:'C:/tools/program.exe',mode:'combined'}),/尚未支持|不支持/);
+});
