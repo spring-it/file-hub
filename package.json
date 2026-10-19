@@ -10,7 +10,10 @@
     "build": "tsc --noEmit && vite build",
     "test": "node --test tests/*.test.cjs",
     "package:win": "npm run build && npm run generate:icons && electron-builder --win nsis --publish never",
-    "generate:icons": "node scripts/generate-icons.cjs"
+    "generate:icons": "node scripts/generate-icons.cjs",
+    "pretest": "npm run generate:icons",
+    "predev": "npm run generate:icons",
+    "prestart": "npm run generate:icons"
   },
   "dependencies": {
     "lucide-react": "^0.468.0",
