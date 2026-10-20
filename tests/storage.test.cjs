@@ -32,7 +32,7 @@ test('statistics remain accurate when more files exist than the 2000-row display
 test('a browser monitor rule must name the actual browser executable',t=>{
   const s=fixture(t);
   assert.throws(()=>s.addProgram({name:'Impostor',exePath:'C:/tools/notchrome.exe',mode:'browser'}),/仅支持 Edge\/Chrome/);
-  assert.throws(()=>s.addProgram({name:'Unsupported',exePath:'C:/tools/program.exe',mode:'combined'}),/尚未支持|不支持/);
+  assert.doesNotThrow(()=>s.addProgram({name:'Supported ETW',exePath:'C:/tools/program.exe',mode:'combined'}));
 });
 
 test('two SQLite connections do not duplicate the same discovered file',t=>{const dir=fs.mkdtempSync(path.join(os.tmpdir(),'fh-race-')),dbPath=path.join(dir,'shared.sqlite');const a=createStore(dbPath),b=createStore(dbPath);t.after(()=>{a.close();b.close();fs.rmSync(dir,{recursive:true,force:true})});const value={path:'C:/Download/shared.pdf',size:9,mtimeMs:1234};assert.equal(a.recordDetection(value).created,true);assert.equal(b.recordDetection(value).created,false);assert.equal(a.getBootstrap().totalFiles,1)});

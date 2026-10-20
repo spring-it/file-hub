@@ -21,7 +21,6 @@ npm run package:win
 ```
 
 打包 Windows 安装程序还需要安装 .NET 10 SDK，以构建自包含的 ETW 代理。`npm run dev` 不要求 ETW 代理已构建；若要试用进程级监听，请先运行 `npm run build:agent`。
-```
 
 普通客户端可配置保存目录；也可在设置中选择“进程 I/O + 目录”启用可选 ETW 监听。ETW 首次启用会请求 Windows 管理员授权，只跟踪所选 EXE 及其子进程；请先在目标 Windows 电脑上验证权限、客户端与网络盘兼容性。浏览器扩展需要安装并在设置中启用相应浏览器。
 
