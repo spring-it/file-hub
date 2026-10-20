@@ -127,21 +127,8 @@ internal static class Program
             });
         }
 
-        using var session = new TraceEventSession("FileHub-ProcessFileIO");
-        var source = session.Source;
-        source.Kernel.ProcessStart += data =>
-        {
-            var image = data.ImageFileName;
-            if (!string.IsNullOrWhiteSpace(image) && targets.TryGetValue(NormalizePath(image), out var name))
-                processOwners[data.ProcessID] = name;
-            else if (processOwners.TryGetValue(data.ParentID, out var parentName))
-                processOwners[data.ProcessID] = parentName;
-        };
-        source.Kernel.ProcessStop += data => processOwners.TryRemove(data.ProcessID, out _);
-        source.Kernel.FileIOCreate += data => EmitFileEvent(data.ProcessID, data.FileName);
-        source.Kernel.FileIOWrite += data => EmitFileEvent(data.ProcessID, data.FileName);
-        source.Kernel.FileIORename += data => EmitFileEvent(data.ProcessID, data.FileName);
-
+        // Kernel ETW sessions must be enabled before accessing session.Source.
+        using var session = new TraceEventSession(KernelTraceEventParser.KernelSessionName);
         try
         {
             session.EnableKernelProvider(
@@ -159,6 +146,20 @@ internal static class Program
             }, JsonOptions));
             return 14;
         }
+
+        var source = session.Source;
+        source.Kernel.ProcessStart += data =>
+        {
+            var image = data.ImageFileName;
+            if (!string.IsNullOrWhiteSpace(image) && targets.TryGetValue(NormalizePath(image), out var name))
+                processOwners[data.ProcessID] = name;
+            else if (processOwners.TryGetValue(data.ParentID, out var parentName))
+                processOwners[data.ProcessID] = parentName;
+        };
+        source.Kernel.ProcessStop += data => processOwners.TryRemove(data.ProcessID, out _);
+        source.Kernel.FileIOCreate += data => EmitFileEvent(data.ProcessID, data.FileName);
+        source.Kernel.FileIOWrite += data => EmitFileEvent(data.ProcessID, data.FileName);
+        source.Kernel.FileIORename += data => EmitFileEvent(data.ProcessID, data.FileName);
 
         var writerTask = Task.Run(async () =>
         {
