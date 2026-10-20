@@ -9,13 +9,15 @@
     "start": "electron .",
     "build": "tsc --noEmit && vite build",
     "test": "node --test tests/*.test.cjs",
-    "package:win": "npm run build && npm run generate:icons && electron-builder --win nsis --publish never",
+    "package:win": "npm run build && npm run generate:icons && npm run build:agent && npm run test:agent && electron-builder --win nsis --publish never",
     "generate:icons": "node scripts/generate-icons.cjs",
     "pretest": "npm run generate:icons && npm run check:runtime",
     "predev": "npm run generate:icons",
     "prestart": "npm run generate:icons",
     "check:runtime": "node scripts/check-runtime.cjs",
-    "prebuild": "npm run check:runtime"
+    "prebuild": "npm run check:runtime",
+    "build:agent": "dotnet publish agent/FileHub.EtwAgent.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o agent/publish",
+    "test:agent": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/test-etw-agent.ps1"
   },
   "dependencies": {
     "lucide-react": "^0.468.0",
@@ -58,6 +60,13 @@
       {
         "from": "scripts",
         "to": "scripts"
+      },
+      {
+        "from": "agent/publish",
+        "to": "agent",
+        "filter": [
+          "FileHub.EtwAgent.exe"
+        ]
       }
     ],
     "win": {
