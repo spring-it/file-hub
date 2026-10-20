@@ -8,7 +8,7 @@ test('Windows app identity is set before startup for native toast notifications'
  assert.ok(main.indexOf("app.setAppUserModelId('com.springit.filehub')")<main.indexOf("app.whenReady()"));
 });
 test('download events use native Windows notifications with an icon and click action',()=>{
- assert.match(main,/new Notification\(\{title,count===1\?/);
+ assert.match(main,/new Notification\(\{title,body,icon:path\.join/);
  assert.match(main,/icon:path\.join\(app\.getAppPath\(\),'assets\/icon\.png'\)/);
  assert.match(main,/n\.on\('click'/);
  assert.match(main,/点击打开并填写标记/);
