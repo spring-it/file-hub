@@ -1,6 +1,6 @@
 {
   "name": "file-hub",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "Windows local download file discovery, tagging and library management",
   "main": "electron/main.cjs",
@@ -17,7 +17,8 @@
     "check:runtime": "node scripts/check-runtime.cjs",
     "prebuild": "npm run check:runtime",
     "build:agent": "dotnet publish agent/FileHub.EtwAgent.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o agent/publish",
-    "test:agent": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/test-etw-agent.ps1"
+    "test:agent": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/test-etw-agent.ps1",
+    "test:etw-integration": "node scripts/test-etw-integration.cjs"
   },
   "dependencies": {
     "lucide-react": "^0.468.0",

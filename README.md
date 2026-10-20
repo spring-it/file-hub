@@ -2,6 +2,10 @@
 
 Windows 本地下载文件发现、标记和文件库管理工具。
 
+## 当前开发版本
+
+当前开发分支版本为 0.2.0（尚未发布）。已发布的基线版本请见 [v0.1.0 Release](https://github.com/spring-it/file-hub/releases/tag/v0.1.0)。
+
 ## 第一阶段
 
 - Electron + React + TypeScript 桌面界面，四个页面：首页概览、下载监听与标记、文件库、设置。

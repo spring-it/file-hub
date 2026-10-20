@@ -17,6 +17,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
       - name: Install dependencies
         run: npm install --no-audit --no-fund
       - name: Run tests
@@ -25,6 +28,8 @@ jobs:
         run: npm run build
       - name: Package Windows installer
         run: npm run package:win
+      - name: ETW integration smoke test
+        run: npm run test:etw-integration
       - name: Verify installer exists
         shell: pwsh
         run: |
@@ -40,7 +45,7 @@ jobs:
           name: file-hub-tested-installer
           path: release/FileHub-Setup-*.exe
           if-no-files-found: error
-      - name: Create or update v0.1.0 GitHub Release
+      - name: Create or update GitHub Release
         shell: pwsh
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -55,11 +60,9 @@ jobs:
           if ($existing.tagName -contains $tag) {
             gh release upload $tag $installer --clobber
             if ($LASTEXITCODE -ne 0) { throw "Release asset upload failed" }
-            Write-Host "Updated release $tag"
           } else {
             gh release create $tag $installer --title "File Hub $tag - Windows MVP" --notes-file "docs/RELEASE_NOTES.md" --prerelease --target $env:GITHUB_SHA
             if ($LASTEXITCODE -ne 0) { throw "Release creation failed" }
-            Write-Host "Created release $tag"
           }
           gh release view $tag --json url,tagName,assets
           if ($LASTEXITCODE -ne 0) { throw "Cannot verify the published release" }

@@ -18,6 +18,7 @@ jobs:
       - run: npm test
       - run: npm run build
       - run: npm run package:win
+      - run: npm run test:etw-integration
       - uses: actions/upload-artifact@v4
         with:
           name: file-hub-windows-installer
