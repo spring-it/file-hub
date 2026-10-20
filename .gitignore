@@ -7,3 +7,7 @@ coverage/
 *.db-wal
 .env
 .DS_Store
+
+agent/publish/
+agent/bin/
+agent/obj/

@@ -209,3 +209,12 @@ Edge/Chrome 扩展、Native Messaging Host、下载完成事件、路径和异�
 ### 下载监听与标记合并页
 
 下载监听与待标记不再作为独立导航页面。合并页左侧展示筛选后的下载记录，右侧展示当前选中待处理文件的业务标记表单；保存标记、保存并入库、稍后处理、忽略/恢复均在同一工作区完成。Windows 下载提醒使用 Electron 原生 Notification，并设置 `com.springit.filehub` AppUserModelID；点击通知会启动或聚焦客户端并打开对应文件的标记工作区。Windows 系统设置关闭应用通知时，应用无法绕过系统策略强制显示通知。
+
+
+### 可选 ETW 进程级监听
+
+- Agent 位于 `agent/FileHub.EtwAgent.csproj`，使用 .NET 10 与 `Microsoft.Diagnostics.Tracing.TraceEvent`，以独立自包含 EXE 打包。
+- 用户在监听程序设置中明确选择“进程 I/O + 目录”时，Electron 通过 UAC 启动 Agent；不选择该模式时不会请求管理员权限。
+- Agent 只上报设置中选定 EXE 的文件创建、写入、重命名事件，并将进程子树中的辅助进程归到已选客户端。事件通过随机命名的本地管道发送回 Electron，由既有文件稳定检测、临时文件过滤、SHA-256、去重和标记工作流处理。
+- Agent 使用有界事件通道、路径事件去抖；Electron 继续限制哈希并发。ETW 需要管理员权限，若系统中已有冲突的内核跟踪会话，应用会报告错误并保留目录监听。
+- CI 会编译 Agent 并运行路径匹配自测，但不启动真实 ETW 内核会话，也不能证明所有第三方客户端、网络盘、重命名和 UAC 行为均兼容。真实 Windows 桌面验证仍是发布门槛。
