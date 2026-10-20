@@ -60,11 +60,12 @@ internal static class Program
         var targets = new ConcurrentDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         var processOwners = new ConcurrentDictionary<int, string>();
         var recentEvents = new ConcurrentDictionary<string, long>(StringComparer.OrdinalIgnoreCase);
+        long droppedEvents = 0;
         var events = Channel.CreateBounded<AgentMessage>(new BoundedChannelOptions(2048)
         {
             SingleReader = true,
             SingleWriter = false,
-            FullMode = BoundedChannelFullMode.DropOldest
+            FullMode = BoundedChannelFullMode.Wait
         });
 
         void Configure(IEnumerable<ProgramTarget>? programs)
@@ -118,13 +119,14 @@ internal static class Program
                         recentEvents.TryRemove(item.Key, out _);
             }
 
-            events.Writer.TryWrite(new AgentMessage
+            if (!events.Writer.TryWrite(new AgentMessage
             {
                 Type = "file-io",
                 FileName = fileName,
                 SourceApp = sourceApp,
                 ProcessId = processId
-            });
+            }))
+                Interlocked.Increment(ref droppedEvents);
         }
 
         // Kernel ETW sessions must be enabled before accessing session.Source.
@@ -164,7 +166,12 @@ internal static class Program
         var writerTask = Task.Run(async () =>
         {
             await foreach (var message in events.Reader.ReadAllAsync())
+            {
                 await writer.WriteLineAsync(JsonSerializer.Serialize(message, JsonOptions));
+                var dropped = Interlocked.Exchange(ref droppedEvents, 0);
+                if (dropped > 0)
+                    await writer.WriteLineAsync(JsonSerializer.Serialize(new AgentMessage { Type = "warning", Message = "ETW event queue overflowed; " + dropped + " file I/O events were dropped." }, JsonOptions));
+            }
         });
 
         await writer.WriteLineAsync(JsonSerializer.Serialize(new AgentMessage { Type = "ready" }, JsonOptions));

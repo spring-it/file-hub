@@ -29,7 +29,7 @@ async function run(){
   agent=spawn(exe,['--pipe-name',pipeName],{windowsHide:true,stdio:['ignore','ignore','pipe']});
   let stderr='';agent.stderr.on('data',chunk=>{stderr+=chunk.toString().slice(-2000)});
   agent.on('exit',code=>{if(!ready)readyReject(new Error('ETW agent exited before ready ('+code+'): '+stderr));else if(!found)eventReject(new Error('ETW agent exited before detecting file I/O ('+code+'): '+stderr))});
-  try{await readyPromise}catch(error){if(/access is denied|error_access_denied|not have sufficient privileges|requires elevation/i.test(error.message)){console.log('ETW integration skipped: hosted runner cannot start a kernel trace session.');return}throw error}
+  try{await readyPromise}catch(error){if(/access is denied|error_access_denied|not have sufficient privileges|requires elevation|another kernel trace session is active|already exists/i.test(error.message)){console.log('ETW integration skipped: hosted runner cannot start a kernel trace session.');return}throw error}
   fs.writeFileSync(target+'.tmp','partial download');fs.renameSync(target+'.tmp',target);fs.appendFileSync(target,' final bytes');
   await eventPromise;
   console.log('ETW integration passed: configured process file I/O reached File Hub over the local pipe.');
