@@ -33,6 +33,6 @@ npm run package:win
 2. 在 Edge 打开 `edge://extensions`，或在 Chrome 打开 `chrome://extensions`，启用“开发人员模式”。
 3. 选择“加载解压缩的扩展”，指向安装目录中的 `resources/extension`（开发环境可直接选择仓库中的 `extension` 目录）。
 4. 在 File Hub 设置中添加对应的 Edge/Chrome EXE 并启用浏览器下载监听。
-5. 下载一个小文件，确认“下载监听”和“待标记”中出现记录。
+5. 下载一个小文件，确认“下载监听与标记”中出现记录。
 
 扩展使用固定公钥标识，Native Messaging Host 的允许来源与该扩展 ID 对应。正式企业部署时建议通过组织策略分发扩展；手动加载仅用于开发与试用。若浏览器显示 Native Host 不可用，请检查安装目录、注册表清单路径和扩展 ID。

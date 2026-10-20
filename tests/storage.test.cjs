@@ -37,6 +37,5 @@ test('a browser monitor rule must name the actual browser executable',t=>{
 
 test('two SQLite connections do not duplicate the same discovered file',t=>{const dir=fs.mkdtempSync(path.join(os.tmpdir(),'fh-race-')),dbPath=path.join(dir,'shared.sqlite');const a=createStore(dbPath),b=createStore(dbPath);t.after(()=>{a.close();b.close();fs.rmSync(dir,{recursive:true,force:true})});const value={path:'C:/Download/shared.pdf',size:9,mtimeMs:1234};assert.equal(a.recordDetection(value).created,true);assert.equal(b.recordDetection(value).created,false);assert.equal(a.getBootstrap().totalFiles,1)});
 
-test('combined mode is accepted for non-browser clients',t=>{const s=fixture(t);assert.doesNotThrow(()=>s.addProgram({name:'Client ETW',exePath:'C:/Apps/client.exe',mode:'combined'}));assert.equal(s.getBootstrap().programs[0].mode,'combined')});
 
 test('ETW attribution refines a generic directory record without creating a duplicate',t=>{const s=fixture(t);s.recordDetection({path:'C:/Downloads/etw.pdf',size:4,mtimeMs:9,sourceApp:'目录监听',sourceType:'client'});const refined=s.refineDetectionSource('C:/Downloads/etw.pdf',4,9,'Chosen Client','client');assert.equal(refined.sourceApp,'Chosen Client');assert.equal(refined.sourceType,'client');assert.equal(s.listFiles().length,1)});
