@@ -4,7 +4,7 @@ Windows 本地下载文件发现、标记和文件库管理工具。
 
 ## 第一阶段
 
-- Electron + React + TypeScript 桌面界面，五个页面：首页概览、下载监听、待标记、文件库、设置。
+- Electron + React + TypeScript 桌面界面，四个页面：首页概览、下载监听与标记、文件库、设置。
 - SQLite 本地台账，记录文件来源、哈希、业务版本、预计发送对象和时间。
 - 多目录监听、文件稳定性检查、临时文件过滤、SHA-256 和手动扫描。
 - Edge/Chrome 下载扩展与 Native Messaging 桥接原型。
