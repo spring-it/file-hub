@@ -220,7 +220,7 @@ internal static class Program
     {
         if (string.IsNullOrWhiteSpace(value))
             return "";
-        var normalized = value.Trim().Replace('/', '\');
+        var normalized = value.Trim().Replace('/', '\\');
         try
         {
             normalized = Path.GetFullPath(normalized);
@@ -229,7 +229,7 @@ internal static class Program
         {
             // Keep device paths as supplied by ETW when they cannot be resolved as DOS paths.
         }
-        return normalized.TrimEnd('\').ToUpperInvariant();
+        return normalized.TrimEnd('\\').ToUpperInvariant();
     }
 
     private static int SelfTest()
