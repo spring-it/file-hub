@@ -46,7 +46,7 @@ Edge/Chrome 扩展在下载完成时发送浏览器类型、下载项 ID、文�
 
 ### 3.3 ETW 进程 I/O + 目录
 
-设置中的组合模式仅允许非浏览器 EXE。启用后 Electron 在 Windows 上创建随机命名的本地管道，并通过 PowerShell 的 `Start-Process -Verb RunAs` 请求启动自包含 ETW Agent。
+设置中的组合模式仅允许非浏览器 EXE。启用或重新启动进程监听时，Electron 在 Windows 上创建随机命名的本地管道，并通过 PowerShell 的 `Start-Process -Verb RunAs` 请求启动自包含 ETW Agent，因此可能再次出现 UAC 提示。
 
 Agent：
 - 订阅 Kernel Process 与 File I/O 事件，按完整 EXE 路径匹配设置中的目标程序。
