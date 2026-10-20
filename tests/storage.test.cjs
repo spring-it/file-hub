@@ -39,3 +39,5 @@ test('two SQLite connections do not duplicate the same discovered file',t=>{cons
 
 
 test('ETW attribution refines a generic directory record without creating a duplicate',t=>{const s=fixture(t);s.recordDetection({path:'C:/Downloads/etw.pdf',size:4,mtimeMs:9,sourceApp:'目录监听',sourceType:'client'});const refined=s.refineDetectionSource('C:/Downloads/etw.pdf',4,9,'Chosen Client','client');assert.equal(refined.sourceApp,'Chosen Client');assert.equal(refined.sourceType,'client');assert.equal(s.listFiles().length,1)});
+
+test('combined mode is accepted only for non-browser executables',t=>{const s=fixture(t);assert.doesNotThrow(()=>s.addProgram({name:'Client ETW',exePath:'C:/Apps/client.exe',mode:'combined'}));assert.throws(()=>s.addProgram({name:'Chrome ETW',exePath:'C:/Apps/chrome.exe',mode:'combined'}),/浏览器应使用浏览器下载模式/)});
