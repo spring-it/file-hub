@@ -30,6 +30,9 @@ jobs:
         run: npm run package:win
       - name: ETW integration smoke test
         run: npm run test:etw-integration
+      - name: Silent install and uninstall smoke test
+        shell: pwsh
+        run: ./scripts/test-windows-installer.ps1
       - name: Verify installer exists
         shell: pwsh
         run: |

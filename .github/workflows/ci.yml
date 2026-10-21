@@ -19,6 +19,9 @@ jobs:
       - run: npm run build
       - run: npm run package:win
       - run: npm run test:etw-integration
+      - name: Windows installer silent install/uninstall smoke test
+        shell: pwsh
+        run: ./scripts/test-windows-installer.ps1
       - uses: actions/upload-artifact@v4
         with:
           name: file-hub-windows-installer
