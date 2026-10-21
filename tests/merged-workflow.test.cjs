@@ -31,3 +31,8 @@ test('library actions always select the target file, including after archive',()
  assert.match(app,/function showLibrary\(f:FileItem\)\{setQuery\(''\);setLibrarySelectedId\(f\.id\);setPage\('library'\)\}/);
  assert.match(app,/if\(archive&&ok\)\{setLibrarySelectedId\(current\.id\)/);
 });
+
+test('a pinned file outside the first page does not shift SQLite pagination offsets',()=>{
+ assert.match(app,/listFilesPage\(baseRecords\.length,200\)/);
+ assert.match(app,/data&&baseRecords\.length<data\.totalFiles/);
+});
