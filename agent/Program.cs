@@ -129,8 +129,10 @@ internal static class Program
                 Interlocked.Increment(ref droppedEvents);
         }
 
-        // Kernel ETW sessions must be enabled before accessing session.Source.
-        using var session = new TraceEventSession(KernelTraceEventParser.KernelSessionName);
+        // Modern named system-trace sessions use OS ETW APIs and do not require
+        // the optional native KernelTraceControl.dll (missing in single-file publish).
+        // Enable providers before reading Source so TraceEvent does not prematurely start the session.
+        using var session = new TraceEventSession("FileHub-ProcessFileIO-" + Environment.ProcessId);
         try
         {
             session.EnableKernelProvider(

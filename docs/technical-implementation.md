@@ -49,7 +49,7 @@ Edge/Chrome 扩展在下载完成时发送浏览器类型、下载项 ID、文�
 设置中的组合模式仅允许非浏览器 EXE。启用或重新启动进程监听时，Electron 在 Windows 上创建随机命名的本地管道，并通过 PowerShell 的 `Start-Process -Verb RunAs` 请求启动自包含 ETW Agent，因此可能再次出现 UAC 提示。
 
 Agent：
-- 订阅 Kernel Process 与 File I/O 事件，按完整 EXE 路径匹配设置中的目标程序。
+- 通过 Windows 命名系统跟踪会话订阅 Kernel Process 与 File I/O 事件（无需单文件安装包携带 KernelTraceControl.dll），按完整 EXE 路径匹配设置中的目标程序。
 - 关联已配置进程启动的子进程，以覆盖常见辅助下载进程。
 - 上报文件创建、写入和重命名候选；不把 I/O 事件直接当作下载完成。
 - 使用有界事件队列和路径去抖。队列溢出时发送警告，避免无界内存增长。
