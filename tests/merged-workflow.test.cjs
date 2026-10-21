@@ -12,7 +12,7 @@ test('download monitoring and tagging use a single page and navigation item',()=
  assert.match(app,/保存并入库/);
 });
 test('notification clicks route file tagging into the merged page',()=>{
- assert.match(app,/function tag\(f:FileItem\)\{setSelected\(f\.id\);setForm\(toForm\(f\)\);setPage\('monitor'\)\}/);
+ assert.match(app,/function tag\(f:FileItem\)\{if\(page!=='monitor'/);
  assert.match(app,/onOpenTagging\(fileId=>/);
 });
 test('file discovery does not show a duplicate in-app toast',()=>{
@@ -25,4 +25,9 @@ test('notification deep links support records outside the first page and clear a
  assert.match(app,/setPinnedFile\(pinned\?file:null\)/);
  assert.match(app,/setSourceFilter\('all'\);setAppFilter\('all'\)/);
  assert.match(app,/consumeOpenFileId\(\)\.then\(id=>\{if\(id\)void focusFile\(id\)\}\)/);
+});
+
+test('library actions always select the target file, including after archive',()=>{
+ assert.match(app,/function showLibrary\(f:FileItem\)\{setQuery\(''\);setLibrarySelectedId\(f\.id\);setPage\('library'\)\}/);
+ assert.match(app,/if\(archive&&ok\)\{setLibrarySelectedId\(current\.id\)/);
 });
