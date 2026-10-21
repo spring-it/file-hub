@@ -18,11 +18,13 @@
 - [x] 性能保护：扫描候选/遍历深度限制、SHA-256 并发上限、数据库忙等待与索引、ETW 队列和通知队列上限。
 - [x] 自动化测试覆盖状态机、SQLite、目录监听、并发重复事件、临时文件改名、哈希、Native Messaging、图标、合并页面和 Windows 通知代码。
 - [x] Windows CI 配置 Node.js 22、.NET 10，执行测试、TypeScript/Vite 构建、自包含 ETW Agent 编译、自测和 NSIS 打包。
-- [x] 增加 NSIS 静默安装/卸载冒烟测试，校验安装资源、浏览器 Native Messaging 注册表与清单及卸载清理（最新结果以 CI 为准）。
-- [x] 添加条件式 ETW 集成冒烟测试：仅在明确权限不足时跳过；其它会话初始化、原生库缺失或事件转发错误必须使 CI 失败。
+- [x] NSIS 静默安装/卸载冒烟测试通过，安装资源、Chrome/Edge Native Messaging 注册表与清单及卸载清理均已验证（见 [CI #39571927990](https://github.com/spring-it/file-hub/actions/runs/39571927990)）。
+- [x] Windows CI 中 ETW 实际文件 I/O 集成测试通过，指定进程事件经命名管道成功返回（见 [CI #39570552139](https://github.com/spring-it/file-hub/actions/runs/39570552139)）；仅明确权限不足时允许跳过。
 - [x] 准备 v0.2.0 发布工作流和发布说明；发布工作流只在 main 分支运行。
 
 ## 必须在真实 Windows 桌面完成的验收
+
+详细手工步骤与预期结果见 [Windows 桌面验收清单](docs/windows-acceptance.md)。
 
 - [ ] 首次安装、升级、卸载；验证托盘、开机后运行和安装目录清理。
 - [ ] 验证 Windows 右下角原生通知确实出现，点击后能启动/聚焦 File Hub 并打开正确文件标记表单；检查 Windows 通知权限关闭时的提示。

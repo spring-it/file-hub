@@ -28,7 +28,7 @@ npm run package:win
 
 普通客户端可配置保存目录；也可在设置中选择“进程 I/O + 目录”启用可选 ETW 监听。ETW 启用或重新启动进程监听时会请求 Windows 管理员授权，只跟踪所选 EXE 及其子进程；请先在目标 Windows 电脑上验证权限、客户端与网络盘兼容性。浏览器扩展需要安装并在设置中启用相应浏览器。
 
-见 [技术方案](docs/technical-implementation.md)、[实施计划](PLAN.md)、[页面设计](docs/design/README.md)。
+见 [技术方案](docs/technical-implementation.md)、[实施计划](PLAN.md)、[Windows 桌面验收清单](docs/windows-acceptance.md)、[页面设计](docs/design/README.md)。
 
 ## 浏览器扩展安装（开发/试用）
 
