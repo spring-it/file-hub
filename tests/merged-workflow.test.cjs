@@ -19,3 +19,10 @@ test('file discovery does not show a duplicate in-app toast',()=>{
  assert.match(app,/onFileDetected\(\(\)=>\{void refresh\(\)\}\)/);
  assert.doesNotMatch(app,/setNotificationFile/);
 });
+
+test('notification deep links support records outside the first page and clear active filters',()=>{
+ assert.match(app,/getFile\(fileId\)/);
+ assert.match(app,/setPinnedFile\(pinned\?file:null\)/);
+ assert.match(app,/setSourceFilter\('all'\);setAppFilter\('all'\)/);
+ assert.match(app,/consumeOpenFileId\(\)\.then\(id=>\{if\(id\)void focusFile\(id\)\}\)/);
+});
